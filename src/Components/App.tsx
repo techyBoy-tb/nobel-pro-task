@@ -2,24 +2,37 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Text } from 'react-native-elements';
 import { RadioButton } from 'react-native-paper';
+import ApiService from '../Services/ApiService';
 import { AppProps, AppState } from '../Utils/StatesProps';
 import { styles } from './AppStyles';
 import FormButton from './Shared/FormButton/FormButton';
 import FormInput from './Shared/FormInput/FormInput';
 export default class App extends Component<AppProps, AppState> {
-  
-  state: AppState = {
-    inputValue: "",
-    measurementType: "",
-    selectedIndex: 2
-  }
 
-  onPressLearnMore = (): void => {
+  state: AppState = {
+    inputValue: '',
+    measurementType: '',
+    invalidInputs: false
+  }
+  apiService: ApiService = new ApiService();
+
+  submit = async () => {
     console.log('Hello button has been pressed');
-    // This is where I need to navigate to another page and call the Weather API
+    await this.validateInputs();
+    if (this.state.invalidInputs) { return; };
+    // Need to add some error handling into this, i.e. place not found, no data etc.. 
+    this.apiService.getCurrentWeather(this.state.inputValue, this.state.measurementType);
+    // Now getting the data back, need to render this in a new page with some nice visulisations 
   }
   updateMeasurementType = (typeOfMeasurement: string): void => {
     this.setState(currentState => ({ ...currentState, measurementType: typeOfMeasurement }))
+  }
+  validateInputs(): void {
+    if (this.state.inputValue === '' || this.state.measurementType === '') {
+      this.setState(currentState => ({ ...currentState, invalidInputs: true }))
+    } else {
+      this.setState(currentState => ({ ...currentState, invalidInputs: false }))
+    }
   }
   render() {
     return (
@@ -66,7 +79,8 @@ export default class App extends Component<AppProps, AppState> {
           autoCapitalize='none'
           autoCorrect={false}
         />
-         <FormButton buttonTitle='Get weather info' onPress={() => this.onPressLearnMore()} />
+         <FormButton buttonTitle='Get weather info' onPress={() => this.submit()} />
+         {this.state.invalidInputs ? <Text style={styles.errorMessage}>Please enter a valid values</Text> : null }
       </View>
     );
   } 

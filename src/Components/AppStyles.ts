@@ -41,5 +41,8 @@ export const styles = StyleSheet.create({
     display: 'flex',
     alignSelf: 'baseline',
     // padding: 8
+  },
+  errorMessage: {
+    color: 'red'
   }
 });
