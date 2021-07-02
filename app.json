@@ -1,0 +1,12 @@
+{
+  "name": "nobel-pro-task",
+  "displayName": "nobel-pro-task",
+  "expo": {
+    "name": "nobel-pro-task",
+    "slug": "nobel-pro-task",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
