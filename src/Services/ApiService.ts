@@ -1,9 +1,10 @@
 import axios from "axios";
 
 export default class ApiService {
-  baseUrl = 'https://cors-anywhere.herokuapp.com/https://f0djmbd6e9.execute-api.us-east-2.amazonaws.com/default/config-service';
+  baseUrl = 'https://f0djmbd6e9.execute-api.us-east-2.amazonaws.com/default/config-service';
   config;
-  constructor() {
+
+  getApiConfig = async () => {
     const header = {
       'Access-Control-Allow-Origin': '*'
     }
@@ -12,18 +13,22 @@ export default class ApiService {
       'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS'
     }}).then((response => {
       this.config = response.data;
-    }))
+    })).catch(err => {
+      console.log('this is the errorrr', err);
+    })
   }
-
-  getCurrentWeather = async (location: string, unitType: string) => {
+  getCurrentWeather = async (lat: string, long: string, unitType: string): Promise<any> => {
+    await this.getApiConfig();
     const params = new URLSearchParams({
-      q: location,
+      lat: lat,
+      lon: long,
       units: unitType,
       appid: this.config.apiKey
     }).toString();
-    const fullUrl = this.config.weatherUrl + `?${params}`
+    const fullUrl = this.config.weatherUrl + `?${params}`;
+    
     return axios.get(fullUrl).then(response => {
-      console.log('This is the response from the API', response);
+      return response;
     }).catch(error => {
       console.log('There has been some sort of error in the request', error);
     })
